@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StayType | NYC House Classification</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+    <header class="navbar">
+        <a class="brand" href="#">
+            <span class="brand-icon">S</span>
+            <span>Stay<span class="brand-accent">Type</span></span>
+        </a>
+        <span class="nav-tag">NYC HOUSE CLASSIFICATION</span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <div class="eyebrow"><span class="live-dot"></span> AI-POWERED CLASSIFICATION</div>
+            <h1>Discover your <span>StayType.</span></h1>
+            <p class="hero-description">
+                Enter property details and let our machine learning model
+                predict the room type for your NYC listing.
+            </p>
+        </section>
+
+        <section class="workspace">
+            <div class="form-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="section-kicker">PROPERTY DETAILS</p>
+                        <h2>Configure your listing</h2>
+                    </div>
+                    <span class="step-label">10 FIELDS</span>
+                </div>
+
+                <form id="predictionForm">
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="latitude">Latitude</label>
+                            <input id="latitude" type="number" step="any"
+                                   min="-90" max="90" value="40.7128" required>
+                            <small>Geographic latitude</small>
+                        </div>
+
+                        <div class="field">
+                            <label for="longitude">Longitude</label>
+                            <input id="longitude" type="number" step="any"
+                                   min="-180" max="180" value="-74.0060" required>
+                            <small>Geographic longitude</small>
+                        </div>
+
+                        <div class="field">
+                            <label for="neighbourhood_group">Borough</label>
+                            <select id="neighbourhood_group" required>
+                                <option value="Manhattan">Manhattan</option>
+                                <option value="Brooklyn">Brooklyn</option>
+                                <option value="Queens">Queens</option>
+                                <option value="Bronx">Bronx</option>
+                                <option value="Staten Island">Staten Island</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="neighbourhood">Neighbourhood</label>
+                            <input id="neighbourhood" type="text"
+                                   placeholder="e.g. Harlem" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="price">Price (USD)</label>
+                            <div class="input-prefix">
+                                <span>$</span>
+                                <input id="price" type="number" min="1"
+                                       step="any" value="150" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="minimum_nights">Minimum nights</label>
+                            <input id="minimum_nights" type="number"
+                                   min="1" max="365" value="2" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="number_of_reviews">Number of reviews</label>
+                            <input id="number_of_reviews" type="number"
+                                   min="0" value="10" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="reviews_per_month">Reviews per month</label>
+                            <input id="reviews_per_month" type="number"
+                                   min="0" step="any" value="1.5" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="calculated_host_listings_count">
+                                Host listings count
+                            </label>
+                            <input id="calculated_host_listings_count"
+                                   type="number" min="0" value="1" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="availability_365">Availability (days)</label>
+                            <input id="availability_365" type="number"
+                                   min="0" max="365" value="180" required>
+                        </div>
+                    </div>
+
+                    <div class="form-note">
+                        <span class="info-icon">i</span>
+                        Your inputs are sent to the connected prediction API.
+                    </div>
+
+                    <button type="submit" id="predictBtn" class="predict-btn">
+                        <span id="btnText">Predict Room Type</span>
+                        <span class="btn-arrow" id="btnArrow">↗</span>
+                    </button>
+                </form>
+            </div>
+
+            <aside class="result-card" id="resultCard">
+                <div class="result-top">
+                    <div>
+                        <p class="section-kicker">PREDICTION OUTPUT</p>
+                        <h2>Your result</h2>
+                    </div>
+                    <div class="result-icon">✦</div>
+                </div>
+
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-illustration">
+                        <div class="illustration-house">
+                            <div class="house-roof"></div>
+                            <div class="house-body">
+                                <div class="house-door"></div>
+                                <div class="house-window"></div>
+                            </div>
+                        </div>
+                        <span class="spark spark-a">✦</span>
+                        <span class="spark spark-b">✧</span>
+                    </div>
+                    <h3>Ready when you are</h3>
+                    <p>Complete the property details and run a prediction to see the model's result here.</p>
+                </div>
+
+                <div id="loadingState" class="loading-state hidden">
+                    <div class="loader-ring"></div>
+                    <h3>Analyzing your listing</h3>
+                    <p id="loadingMessage">Connecting to the prediction model...</p>
+                    <div class="loading-track">
+                        <div class="loading-bar"></div>
+                    </div>
+                </div>
+
+                <div id="errorState" class="error-state hidden">
+                    <div class="error-icon">!</div>
+                    <h3>Prediction unavailable</h3>
+                    <p id="errorMessage">Could not connect to the prediction server.</p>
+                    <button type="button" id="retryBtn" class="retry-btn">Try again</button>
+                </div>
+
+                <div id="successState" class="success-state hidden">
+                    <div class="success-label"><span class="success-dot"></span> MODEL RESULT</div>
+                    <div class="prediction-name" id="predictionName">—</div>
+                    <p class="prediction-caption">Predicted room type</p>
+
+                    <div class="result-divider"></div>
+
+                    <div class="probability-heading">
+                        <span>Class probabilities</span>
+                        <span class="muted-label">MODEL OUTPUT</span>
+                    </div>
+                    <div id="probabilityList" class="probability-list"></div>
+
+                    <button type="button" id="resetBtn" class="reset-btn">
+                        ↻ &nbsp; New prediction
+                    </button>
+                </div>
+            </aside>
+        </section>
+
+        <footer>
+            <span>StayType <span class="footer-dot">•</span> NYC House Classification</span>
+            <span>Powered by Machine Learning</span>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
